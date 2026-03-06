@@ -1,117 +1,106 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  TextInput,
+  Animated,
   Dimensions,
-  SafeAreaView,
   StatusBar,
+  Platform,
+  KeyboardAvoidingView,
   Image,
-  FlatList,
 } from 'react-native';
 
 const { width, height } = Dimensions.get('window');
 
-const COLORS = {
-  black: '#0A0A0A',
-  darkGray: '#1A1A1A',
-  gold: '#C9A84C',
-  goldLight: '#E8C97A',
-  goldDark: '#A07830',
-  white: '#FFFFFF',
-  offWhite: '#F5F0E8',
-  gray: '#888888',
-  lightGray: '#2A2A2A',
-};
+const GOLD = '#C9A84C';
+const GOLD_LIGHT = '#E8C97A';
+const GOLD_DARK = '#8B6914';
+const BLACK = '#0A0A0A';
+const DARK_GRAY = '#1A1A1A';
+const MEDIUM_GRAY = '#2A2A2A';
+const LIGHT_GRAY = '#3A3A3A';
+const WHITE = '#FFFFFF';
+const WHITE_70 = 'rgba(255,255,255,0.7)';
+const WHITE_30 = 'rgba(255,255,255,0.3)';
+const WHITE_10 = 'rgba(255,255,255,0.1)';
+const GOLD_10 = 'rgba(201,168,76,0.1)';
+const GOLD_20 = 'rgba(201,168,76,0.2)';
+const GOLD_30 = 'rgba(201,168,76,0.3)';
 
-const onboardingSlides = [
-  {
-    id: '1',
-    title: 'Eleganza',
-    subtitle: 'Un servizio su misura per chi non accetta compromessi. Ogni dettaglio curato con raffinatezza assoluta.',
-    icon: '✦',
-  },
-  {
-    id: '2',
-    title: 'Puntualità',
-    subtitle: 'Il tempo è il lusso più prezioso. I nostri professionisti rispettano ogni impegno con precisione svizzera.',
-    icon: '◈',
-  },
-  {
-    id: '3',
-    title: 'Eternal Gift',
-    subtitle: 'Regala un\'esperienza indimenticabile. Un dono che trascende il tempo e rimane nel cuore per sempre.',
-    icon: '◆',
-  },
-];
+const GoldDivider = () => (
+  <View style={styles.dividerContainer}>
+    <View style={styles.dividerLine} />
+    <View style={styles.dividerDiamond} />
+    <View style={styles.dividerLine} />
+  </View>
+);
 
-const profiles = [
-  {
-    id: '1',
-    name: 'Sofia',
-    surname: 'Esposito',
-    role: 'Senior Stylist',
-    rating: 4.9,
-    reviews: 312,
-    specialty: 'Colorazione & Tagli di Alta Moda',
-    availability: 'Disponibile Oggi',
-    price: '€€€',
-    initials: 'SE',
-  },
-  {
-    id: '2',
-    name: 'Marco',
-    surname: 'Ricci',
-    role: 'Master Barber',
-    rating: 4.8,
-    reviews: 284,
-    specialty: 'Barba & Grooming di Lusso',
-    availability: 'Disponibile Domani',
-    price: '€€€',
-    initials: 'MR',
-  },
-  {
-    id: '3',
-    name: 'Giulia',
-    surname: 'Ferrara',
-    role: 'Nail Artist',
-    rating: 5.0,
-    reviews: 198,
-    specialty: 'Nail Art & Manicure Premium',
-    availability: 'Disponibile Oggi',
-    price: '€€',
-    initials: 'GF',
-  },
-  {
-    id: '4',
-    name: 'Alessandro',
-    surname: 'Conti',
-    role: 'Skin Specialist',
-    rating: 4.9,
-    reviews: 156,
-    specialty: 'Trattamenti Viso Esclusivi',
-    availability: 'Disponibile Oggi',
-    price: '€€€€',
-    initials: 'AC',
-  },
-  {
-    id: '5',
-    name: 'Valentina',
-    surname: 'Romano',
-    role: 'Makeup Artist',
-    rating: 4.7,
-    reviews: 423,
-    specialty: 'Trucco Sposa & Alta Cerimonia',
-    availability: 'Su Appuntamento',
-    price: '€€€',
-    initials: 'VR',
-  },
-];
+export default function App() {
+  const [screen, setScreen] = useState('onboarding');
+  const [onboardingPage, setOnboardingPage] = useState(0);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loginError, setLoginError] = useState('');
+  const [activeTab, setActiveTab] = useState('portfolio');
 
-function GoldDivider() {
-  return (
-    <View style={styles.goldDividerContainer}>
-      <View style={styles.goldDividerLine} />
-      <Text style={styles.goldDividerDiamond}>◆</Text>
+  const fadeAnim = useRef(new Animated.Value(1)).current;
+  const slideAnim = useRef(new Animated.Value(0)).current;
+  const logoScale = useRef(new Animated.Value(0.8)).current;
+  const logoOpacity = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(logoScale, {
+        toValue: 1,
+        duration: 1000,
+        useNativeDriver: true,
+      }),
+      Animated.timing(logoOpacity, {
+        toValue: 1,
+        duration: 1000,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, []);
+
+  const navigateTo = (nextScreen) => {
+    Animated.timing(fadeAnim, {
+      toValue: 0,
+      duration: 300,
+      useNativeDriver: true,
+    }).start(() => {
+      setScreen(nextScreen);
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    });
+  };
+
+  const handleLogin = () => {
+    if (!email || !password) {
+      setLoginError('Inserisci email e password');
+      return;
+    }
+    setLoginError('');
+    navigateTo('dashboard');
+  };
+
+  const onboardingData = [
+    {
+      title: 'Benvenuto in\nAurum Wealth',
+      subtitle: 'La piattaforma di private banking riservata a chi non si accontenta del mediocre.',
+      icon: '◆',
+    },
+    {
+      title: 'Gestione\nPatrimoniale Elite',
+      subtitle: 'Accedi a opportunità di investimento esclusive, riservate ai grandi patrimoni.',
+      icon: '◈',
+    },
+    {
+      title: 'Consulenza\nPersonalizzata',
