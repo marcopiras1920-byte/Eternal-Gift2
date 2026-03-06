@@ -1,0 +1,111 @@
+import React, { useState, useRef, useEffect } from 'react';
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  StyleSheet,
+  Dimensions,
+  Animated,
+  Modal,
+  TextInput,
+  StatusBar,
+  FlatList,
+  Platform,
+} from 'react-native';
+
+const { width, height } = Dimensions.get('window');
+
+const COLORS = {
+  black: '#0A0A0A',
+  darkGray: '#141414',
+  mediumGray: '#1E1E1E',
+  lightGray: '#2A2A2A',
+  gold: '#C9A84C',
+  goldLight: '#E8C97A',
+  goldDark: '#A67C2E',
+  cream: '#F5F0E8',
+  creamDark: '#E8E0D0',
+  white: '#FFFFFF',
+  text: '#F5F0E8',
+  textMuted: '#888888',
+  textDark: '#555555',
+  accent: '#C9A84C',
+  success: '#4CAF50',
+  danger: '#E53935',
+};
+
+const MOCK_PROFILES = [
+  {
+    id: '1',
+    name: 'Sofia Ricci',
+    relation: 'Fidanzata',
+    avatar: '💑',
+    age: 28,
+    preferences: ['Gioielli', 'Profumi', 'Esperienze', 'Moda'],
+    budget: 'Lusso',
+    nextGift: '2025-02-14',
+    activeSubscription: 'Mensile',
+    color: '#C9A84C',
+  },
+  {
+    id: '2',
+    name: 'Marco Bianchi',
+    relation: 'Amico',
+    avatar: '👨‍🤝‍👨',
+    age: 32,
+    preferences: ['Tech', 'Viaggi', 'Sport', 'Gastronomia'],
+    budget: 'Smart',
+    nextGift: '2025-03-15',
+    activeSubscription: 'Trimestrale',
+    color: '#4A90D9',
+  },
+  {
+    id: '3',
+    name: 'Anna e Giuseppe',
+    relation: 'Genitori',
+    avatar: '👨‍👩‍👧',
+    age: 60,
+    preferences: ['Esperienze', 'Benessere', 'Gastronomia', 'Casa'],
+    budget: 'Premium',
+    nextGift: '2025-04-01',
+    activeSubscription: 'Semestrale',
+    color: '#8E6AC4',
+  },
+  {
+    id: '4',
+    name: 'Giulia Moretti',
+    relation: 'Migliore Amica',
+    avatar: '👯‍♀️',
+    age: 26,
+    preferences: ['Libri', 'Arte', 'Benessere', 'Moda'],
+    budget: 'Medium',
+    nextGift: '2025-05-20',
+    activeSubscription: 'Bimestrale',
+    color: '#E8587A',
+  },
+];
+
+const MOCK_TIMELINE = [
+  {
+    id: 't1',
+    date: '2024-12-25',
+    recipient: 'Sofia Ricci',
+    gift: 'Collana Tiffany & Co. - Heart pendant',
+    price: '€380',
+    status: 'consegnato',
+    emoji: '💝',
+    future: false,
+  },
+  {
+    id: 't2',
+    date: '2025-01-01',
+    recipient: 'Marco Bianchi',
+    gift: 'Bottiglia Whisky Single Malt 18 anni',
+    price: '€95',
+    status: 'consegnato',
+    emoji: '🥃',
+    future: false,
+  },
+  {
+    id: 
